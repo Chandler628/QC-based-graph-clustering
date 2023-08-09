@@ -51,6 +51,16 @@ def find(p, parent):
         parent[p] = find(parent[p], parent)
     return parent[p]
 
+def find_iter(p, parent):
+    x = p
+    tmp = x
+    while p != parent[p]:
+        p = parent[p]
+    while x != parent[x]:
+        tmp = parent[x]
+        parent[x] = p
+        x = tmp
+
 def gradient_descent_gpu(delta, g, weight="weight", disconnect_weight=1000):
     id = list(nx.to_pandas_adjacency(g))
 
@@ -101,7 +111,7 @@ def gradient_descent_gpu(delta, g, weight="weight", disconnect_weight=1000):
     """
     # 新梯度下降
     for i, elem in enumerate(label):
-            if i != elem: find(i, label)
+            if i != elem: find_iter(i, label)
     
     # print(y)
     # print(label)
@@ -222,9 +232,9 @@ def load_citeseer_dataset():
 
 
 def load_pubmed_dataset():
-    adj = np.load("./pubmed/pubmed_adj.npy")
-    feat = np.load("./pubmed/pubmed_feat.npy")
-    label = np.load("./pubmed/pubmed_label.npy")
+    adj = np.load("./datasets/pubmed/pubmed_adj.npy")
+    feat = np.load("./datasets/pubmed/pubmed_feat.npy")
+    label = np.load("./datasets/pubmed/pubmed_label.npy")
     g = nx.from_numpy_array(adj)
     return g, label
 
